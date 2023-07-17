@@ -1,0 +1,21 @@
+1번: 전체 구매 고객에 대하여 고객별 총 구매 금액 출력하기
+
+SELECT CustomerName as 고객_이름, IFNULL(round(sum(Price * Quantity),2),0) as 고객별_총_구매_금액
+FROM Orders as O
+FULL JOIN Customers as C On O.CustomerID = C.CustomerID
+LEFT Join OrderDetails as D on O.OrderID = D.OrderID
+LEFT Join Products as P on D.ProductID = P.ProductID
+GROUP BY CustomerName
+
+2번: 200개 이상의 판매가 이루어진 상품의 카테고리 이름과 총 판매량, 총 판매 금
+
+SELECT ProductName AS 상품명, CategoryName AS 카테고리_이름,sum(D1.Quantity) AS 총_판매량, round(sum(D1.Quantity * P1.Price),2) AS 총_판매_금액
+FROM Products AS P1
+LEFT JOIN OrderDetails AS D1 ON P1.ProductID = D1.ProductID
+LEFT JOIN Categories AS C1 on P1.CategoryID = C1.CategoryID
+WHERE(SELECT sum(D2.Quantity)
+   FROM Products AS P2
+   LEFT JOIN OrderDetails AS D2 ON P2.ProductID = D2.ProductID
+   WHERE P2.ProductID = P1.ProductID
+   GROUP BY P2.ProductID) >= 200
+GROUP BY P1.ProductID
