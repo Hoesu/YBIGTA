@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  0727linuxdocker:
+    image: 0727linuxdocker
+    build:
+      context: .
+      dockerfile: ./Dockerfile
